@@ -1,6 +1,6 @@
 import t from 'tap';
-import overwait from './overwait.js';
-import global from 'global';
+import overwait from '../src/overwait.js';
+import global from '../src/global.js';
 
 const testObjBase = Promise.resolve({
   // Non-promise property
@@ -72,10 +72,14 @@ t.test('promise functions use the correct context (obj)', async (t) => {
   await obj.fn();
 });
 
-
 t.test('native-objects shouldn\'t have their context wrapped ', async (t) => {
   t.plan(1);
-  t.equal(await testObj.pDate.toLocaleString(), (await testObjBase).pDate.toLocaleString());
+
+  const originalDate = await testObj.pDate;
+  originalDate.fn = function() {
+    t.equal(this, originalDate);
+  };
+  await testObj.pDate.fn();
 })
 
 t.test('functions use the correct context (global)', async (t) => {

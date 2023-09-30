@@ -1,4 +1,4 @@
-import global from 'global';
+import global from './global.js';
 
 const noop = ()=>{};
 
@@ -124,7 +124,8 @@ const overwait = (obj, path = []) => {
   // with standard objects because all functions ARE objects. But if we didn't
   // have the Proxy be a function type then we couldn't intercept the
   // apply above.
-  return new Proxy(noop, getHandler(obj, path));
+  const p = new Proxy(noop, getHandler(obj, path));
+  return p;
 };
 
 export default overwait;
