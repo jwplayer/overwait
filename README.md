@@ -1,5 +1,5 @@
 # Overwait
-A lightweight helper to supercharge await!
+A lightweight library to supercharge the await operator!
 
 ## Description
 ### What does it do?
