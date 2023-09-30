@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+/* c8 ignore start */
 let win;
 
 if (typeof window !== "undefined") {
@@ -32,3 +33,4 @@ if (typeof window !== "undefined") {
 }
 
 export default win;
+/* c8 ignore stop */
