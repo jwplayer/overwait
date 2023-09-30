@@ -1,0 +1,18 @@
+{
+  "name": "overwait",
+  "version": "1.0.0",
+  "description": "A lightweight library to supercharge the await operator!",
+  "main": "overwait.js",
+  "type": "module",
+  "scripts": {
+    "test": "tap test-overwait.js"
+  },
+  "author": "Jon-Carlos Rivera <jon.carlos.rivera@gmail.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "tap": "^18.4.0"
+  },
+  "dependencies": {
+    "global": "^4.4.0"
+  }
+}
