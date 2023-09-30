@@ -16,10 +16,9 @@ const body = await res.json();
 
 Overwait way:
 ```js
+const fetchEasy = overwait(fetch); // only need to do this once
 const body = await fetchEach('https://example.com').json();
 ```
-
-But what is `fetchEasy`? Simple: it's just the fetch function wrapped in overwait: `const fetchEasy = overwait(fetch);`!
 
 ### Is that it?
 
