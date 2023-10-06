@@ -2,41 +2,85 @@
 A lightweight library to supercharge the await operator!
 
 ## Description
-### What does it do?
-Overwait takes your objects and wraps them in a proxy that automatically distributes the `await` operator down every step during property lookups, function return values, etc.
+Overwait takes your objects (and functions) and wraps them in a `Proxy` that automatically distributes the `await` operator down every step during property lookups, function return values, etc.
+
+For example:
+```js
+import overwait from 'overwait';
+
+// Wrap the fetch function to make it less tedious
+const fetchy = overwait(fetch);
+```
 
 ### What does that mean?
-In practice, overwait takes `await a.b.c` and turns it into `await (await (await a).b).c`. The simplest usecase is for `fetch`:
+In practice, overwait transforms `await a.b.c` into `await (await (await a).b).c`.
 
-Old way:
+<table>
+  <caption>
+    Overwait Usage Examples
+  </caption>
+  <tr>
+    <th>Before...</th>
+    <th><b>...with Overwait!</b></th>
+  </tr>
+  <tr>
+    <td>
+
 ```js
-const res = await fetch('https://example.com');
+const res = await fetch('https://x.com');
 const body = await res.json();
 ```
 
-Overwait way:
+   </td>
+    <td>
+
 ```js
-const fetchEasy = overwait(fetch); // only need to do this once
-const body = await fetchEach('https://example.com').json();
+const body = await fetchy('https://x.com').json();
 ```
 
-### Is that it?
-
-Well no because it's applying `await` to each level in an object, you can do some crazy things because you'll dig into multiple levels of asynchronous operations:
+   </td>
+  </tr>
+  <tr>
+    <td>
 
 ```js
 // Not a specific db library, just an example
-const dbAll = overwait(db);
-const value = await dbAll.conn('localhost').query('SELECT aColumn FROM MyTable').getRow().aColumn;
+const conn = await db.conn('mydb');
+const cursor = await conn.query('SELECT A');
+const row = await cursor.getRow();
+const value = await row.A;
 ```
 
-Above is indentical to doing:
+   </td>
+    <td>
+
 ```js
-const conn = await db.conn('localhost');
-const cursor = await conn.query('SELECT aColumn FROM MyTable');
-const row = await cursor.getRow();
-const value = await row.aColumn;
+const value = await db.conn('mydb')
+                      .query('SELECT A')
+                      .getRow().A;
 ```
+
+   </td>
+  </tr>
+  <tr>
+    <td>
+
+```js
+const [fileHandle] = await showOpenFilePicker();
+const file = await fileHandle.getFile();
+```
+
+   </td>
+    <td>
+
+```js
+const file = await showOpenFilePicker()[0].getFile();
+```
+
+   </td>
+  </tr>
+</table>
+
 
 ## Other cool things!
 
@@ -46,7 +90,8 @@ This fact allows you to write code like this:
 
 ```js
 const getValueFooBar = async function() {
-  // We don't need concern ourselves if `this`, `foo`, or `bar` are some mix of promises:
+  // We don't need concern ourselves if
+  // `this`, `foo`, or `bar` are some mix of promises:
   return await this.foo.bar;
 };
 ```
@@ -62,3 +107,26 @@ Then when using that function in an object, it just works:
 
   await obj.value(); //=> 'hi there!';
 ```
+
+### But, Jon, I don't want to use `await`!
+
+No `await`? No problem!
+
+Because `await` is just syntactic sugar for `then`, the way the library works actually allows you to `then` to your hearts content.
+
+What this means is that to `overwait` this:
+
+```js
+await promise1.promise2.promise3;
+/*...stuff what comes after...*/
+```
+
+Is identical to this:
+
+```js
+promise1.promise2.promise3.then(() => {
+/*...stuff what comes after...*/
+});
+```
+
+...and it just works!
