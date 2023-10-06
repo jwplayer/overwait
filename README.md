@@ -4,7 +4,13 @@ A lightweight library to supercharge the await operator!
 ## Description
 Overwait takes your objects (and functions) and wraps them in a `Proxy` that automatically distributes the `await` operator down every step during property lookups, function return values, etc.
 
-For example:
+### What does that mean?
+In practice, overwait transforms `await a.b.c` into `await (await (await a).b).c`.
+
+
+## Usage
+`overwait` is a single function. Simply pass it an object or a function and it'll return a `Proxy` that wraps the original object and intercepts property accesses. For example:
+
 ```js
 import overwait from 'overwait';
 
@@ -12,13 +18,9 @@ import overwait from 'overwait';
 const fetchy = overwait(fetch);
 ```
 
-### What does that mean?
-In practice, overwait transforms `await a.b.c` into `await (await (await a).b).c`.
+Here are some _before_ and _afters_ to give you an idea of the kind of code transformations that `overwait` enables:
 
 <table>
-  <caption>
-    Overwait Usage Examples
-  </caption>
   <tr>
     <th>Before...</th>
     <th><b>...with Overwait!</b></th>
@@ -82,7 +84,7 @@ const file = await showOpenFilePicker()[0].getFile();
 </table>
 
 
-## Other cool things!
+### Other cool things!
 
 When using `overwait` to traverse a property chain, we automatically wrap the `this` value in functions that are executed as a part of that traversal.
 
@@ -108,7 +110,7 @@ Then when using that function in an object, it just works:
   await obj.value(); //=> 'hi there!';
 ```
 
-### But, Jon, I don't want to use `await`!
+## But, Jon, I don't want to use `await`!
 
 No `await`? No problem!
 
